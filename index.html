@@ -1,0 +1,155 @@
+<html>
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>I Can't Talk</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>I Can't Talk (ICT)</h1>
+        <div class="form-group">
+            <label for="selectVoice">Select Voice :</label>
+            <select class="form-control" id="selectVoice">
+                <option>Choose a voice</option>
+            </select>
+          </div>
+        
+        <h2>Custom Message</h2>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                Enter your messsage :
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                    <textarea id="message" class="form-control" cols="5"></textarea>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <button type="button" class="btn btn-primary"
+                    onclick="textToSpeech(getElementById('message').value)">Speak</button>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="container">
+        <h2>Common Message</h2>
+        <div class="row">
+            <div class="col-6 col-md-auto" style="margin-bottom:10px">
+                <button type="button" class="btn btn-primary" onclick="textToSpeech('Sorry')">Sorry</button>
+            </div>
+            <div class="col-6 col-md-auto" style="margin-bottom:10px">
+                <button type="button" class="btn btn-primary" onclick="textToSpeech('Excuse Me')">Excuse Me</button>
+            </div>
+            <div class="col-6 col-md-auto" style="margin-bottom:10px">
+                <button type="button" class="btn btn-primary" onclick="textToSpeech('Thank you for the help')">Thank
+                    You</button>
+            </div>
+            <div class="col-6 col-md-auto" style="margin-bottom:10px">
+                <button type="button" class="btn btn-primary"
+                    onclick="textToSpeech('Would you mind letting this person have your seat?')">Old Person /
+                    Pregnant</button>
+            </div>
+            <div class="col-6 col-md-auto" style="margin-bottom:10px">
+                <button type="button" class="btn btn-primary" onclick="textToSpeech('Have a good day')">Have a good
+                    day</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    if ('speechSynthesis' in window) {
+        alert("Broswer supports speech synthesis 🎉");
+    } else {
+        alert("Sorry, your browser doesn't support the speech synthesis API !");
+    }
+    var hasWindow = typeof window === 'object' && window !== null && window.self === window && window.navigator !== null
+    var bIsiOS = hasWindow && /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream
+    var iOSVoiceNames = [
+        'Maged',
+        'Zuzana',
+        'Sara',
+        'Anna',
+        'Melina',
+        'Karen',
+        'Samantha',
+        'Daniel',
+        'Rishi',
+        'Moira',
+        'Tessa',
+        'Mónica',
+        'Paulina',
+        'Satu',
+        'Amélie',
+        'Thomas',
+        'Carmit',
+        'Lekha',
+        'Mariska',
+        'Damayanti',
+        'Alice',
+        'Kyoko',
+        'Yuna',
+        'Ellen',
+        'Xander',
+        'Nora',
+        'Zosia',
+        'Luciana',
+        'Joana',
+        'Ioana',
+        'Milena',
+        'Laura',
+        'Alva',
+        'Kanya',
+        'Yelda',
+        'Tian-Tian',
+        'Sin-Ji',
+        'Mei-Jia'
+    ]
+    window.speechSynthesis.getVoices();
+    var select = document.getElementById("selectVoice");
+    var voices;
+    if ('onvoiceschanged' in speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = function () {
+            voices = window.speechSynthesis.getVoices();
+            populateVoiceSelection();
+        };
+    } else {
+        voices = window.speechSynthesis.getVoices();
+        if (bIsiOS) {
+            let iOSVoices = []
+            for (var i = 0; i < voices.length; ++i) {
+                if (iOSVoiceNames.includes(voices[i].name))
+                    iOSVoices.push(voices[i])
+            }
+            voices = iOSVoices;
+            populateVoiceSelection();
+        }
+    }
+
+    function populateVoiceSelection() {
+        for (var i = 0; i < voices.length; i++) {
+            var opt = voices[i];
+            var el = document.createElement("option");
+            el.textContent = voices[i].name;
+            el.value = i;
+            select.appendChild(el);
+        }
+    }
+
+    function textToSpeech(text) {
+        var selectedOption = document.getElementById("selectVoice").value;
+        var msg = new SpeechSynthesisUtterance();
+        msg.voice = voices[selectedOption];
+        msg.text = text;
+        window.speechSynthesis.speak(msg);
+    }
+</script>
+
+</html>
